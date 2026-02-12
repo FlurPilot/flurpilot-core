@@ -1,0 +1,125 @@
+{
+    "nav": {
+        "dashboard": "Dashboard",
+        "map": "Live Map",
+        "intelligence": "Intelligence",
+        "trust": "Trust Center",
+        "settings": "Settings",
+        "signOut": "Sign Out"
+    },
+    "system": {
+        "title": "System",
+        "workerActive": "Worker Active",
+        "operationsCenter": "Operations Center",
+        "openMenu": "Open menu",
+        "closeMenu": "Close menu",
+        "closePanel": "Close panel"
+    },
+    "search": {
+        "placeholder": "Search parcel or municipality...",
+        "unknown": "Unknown"
+    },
+    "feed": {
+        "title": "Live Intelligence",
+        "subtitle": "Acquisition Stream • Tier 1",
+        "automated": "Automated",
+        "score": "Score: {value}",
+        "virtualParcel": "Virtual Parcel",
+        "unknownMunicipality": "Unknown Municipality",
+        "noAddress": "No Address",
+        "refreshing": "Refreshing...",
+        "live": "Live"
+    },
+    "detail": {
+        "virtualAsset": "Virtual Asset",
+        "parcelIntelligence": "Parcel Intelligence",
+        "algorithmConfidence": "Algorithm Confidence",
+        "acquisitionScore": "Acquisition Score",
+        "propertyData": "Property Data",
+        "netUsableArea": "Net Usable Area",
+        "totalArea": "Total Area",
+        "usage": "Usage",
+        "calculatedArable": "Calculated (Arable)",
+        "owner": "Owner",
+        "privateAssumed": "Private (Assumed)",
+        "evidenceSource": "Evidence Source",
+        "calculationLog": "Calculation Log",
+        "risProtocol": "RIS Protocol.pdf",
+        "exportShapefile": "Export Shapefile",
+        "generateReport": "Generate Full Report"
+    },
+    "note": {
+        "title": "Secure Note",
+        "encryptedHint": "Content encrypted. Enter password to view.",
+        "decryptionPassword": "Decryption Password",
+        "unlock": "Unlock",
+        "createNew": "Create New Note",
+        "writePlaceholder": "Write something confidential...",
+        "passwordToLock": "Password to lock",
+        "zeroKnowledge": "Zero Knowledge: Password loss = permanent data loss. No master key exists."
+    },
+    "map": {
+        "loading": "Loading map data...",
+        "error": "Error loading parcels:",
+        "layers": {
+            "parcels": "Parcels"
+        },
+        "tooltips": {
+            "clickToSelect": "Click to select"
+        }
+    },
+    "common": {
+        "unknown": "Unknown"
+    },
+    "intelligence": {
+        "title": "Intelligence Feed",
+        "subtitle": "Real-time municipal analysis & decision support",
+        "liveConnection": "Live Connection",
+        "incomingSignals": "Incoming Signals",
+        "analystConsole": "AI Analyst Console",
+        "consoleTitle": "Analyst Console v2.0",
+        "processing": "PROCESSING",
+        "ready": "READY",
+        "initialized": "FlurPilot Intelligence initialized.",
+        "readyForQueries": "Ready for queries...",
+        "inputPlaceholder": "Ask FlurPilot Intelligence...",
+        "stop": "Stop",
+        "loadingFeed": "Loading Feed...",
+        "noSignals": "No signals detected.",
+        "untitled": "Untitled Document",
+        "region": "Region",
+        "date": "Date"
+    },
+    "trust": {
+        "title": "Trust Center",
+        "subtitle": "Transparency Report & Security Statistics",
+        "reportTitle": "Transparency Report",
+        "reportSubtitle": "Real-time security metrics and compliance status",
+        "systemLogs": "System Architecture Logs",
+        "compliance": "Compliance & Certificates",
+        "compliant": "COMPLIANT",
+        "aligned": "ALIGNED",
+        "transparencyNote": "Transparency Note",
+        "transparencyBody": "This report is automatically generated from system logs. It serves as proof of data processing integrity.",
+        "metrics": {
+            "piiRedacted": "PII Redacted",
+            "piiDesc": "Personal data removed",
+            "threatsBlocked": "Threats Blocked",
+            "threatsDesc": "WAF & Rate Limiting Events",
+            "uptime": "System Uptime",
+            "uptimeDesc": "Last 30 days",
+            "auditsPassed": "Audits Passed",
+            "auditsDesc": "Internal security checks"
+        },
+        "verifiedSources": {
+            "title": "Verified Sources",
+            "live": "LIVE",
+            "refresh": "Refresh Sources"
+        },
+        "status": {
+            "online": "ONLINE",
+            "maintenance": "MAINTENANCE",
+            "offline": "OFFLINE"
+        }
+    }
+}

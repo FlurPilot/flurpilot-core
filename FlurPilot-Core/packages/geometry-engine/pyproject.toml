@@ -1,0 +1,19 @@
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "geometry-engine"
+version = "0.1.0"
+description = "High-performance geometry engine for FlurPilot"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-benchmark"]
+
+[tool.maturin]
+python-source = "python"
+module-name = "geometry_engine"
+features = ["pyo3/extension-module"]

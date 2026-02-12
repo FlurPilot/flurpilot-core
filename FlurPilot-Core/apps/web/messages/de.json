@@ -1,0 +1,125 @@
+{
+    "nav": {
+        "dashboard": "Dashboard",
+        "map": "Live-Karte",
+        "intelligence": "Intelligence",
+        "trust": "Trust Center",
+        "settings": "Einstellungen",
+        "signOut": "Abmelden"
+    },
+    "system": {
+        "title": "System",
+        "workerActive": "Worker aktiv",
+        "operationsCenter": "Operations Center",
+        "openMenu": "Menü öffnen",
+        "closeMenu": "Menü schließen",
+        "closePanel": "Panel schließen"
+    },
+    "search": {
+        "placeholder": "Flurstück oder Gemeinde suchen...",
+        "unknown": "Unbekannt"
+    },
+    "feed": {
+        "title": "Live Intelligence",
+        "subtitle": "Acquisition Stream • Tier 1",
+        "automated": "Automatisiert",
+        "score": "Score: {value}",
+        "virtualParcel": "Virtuelles Flurstück",
+        "unknownMunicipality": "Unbekannte Gemeinde",
+        "noAddress": "Keine Adresse",
+        "refreshing": "Aktualisiere...",
+        "live": "Live"
+    },
+    "detail": {
+        "virtualAsset": "Virtuelles Asset",
+        "parcelIntelligence": "Parcel Intelligence",
+        "algorithmConfidence": "Algorithmus-Konfidenz",
+        "acquisitionScore": "Akquisitions-Score",
+        "propertyData": "Grundstücksdaten",
+        "netUsableArea": "Netto-Nutzfläche",
+        "totalArea": "Gesamtfläche",
+        "usage": "Nutzung",
+        "calculatedArable": "Berechnet (Acker)",
+        "owner": "Eigentümer",
+        "privateAssumed": "Privat (vermutet)",
+        "evidenceSource": "Nachweis-Quelle",
+        "calculationLog": "Berechnungs-Log",
+        "risProtocol": "RIS-Protokoll.pdf",
+        "exportShapefile": "Shapefile exportieren",
+        "generateReport": "Dossier erstellen"
+    },
+    "note": {
+        "title": "Sichere Notiz",
+        "encryptedHint": "Inhalt verschlüsselt. Passwort eingeben zum Anzeigen.",
+        "decryptionPassword": "Entschlüsselungs-Passwort",
+        "unlock": "Entsperren",
+        "createNew": "Neue Notiz erstellen",
+        "writePlaceholder": "Etwas Vertrauliches schreiben...",
+        "passwordToLock": "Passwort zum Sperren",
+        "zeroKnowledge": "Zero Knowledge: Passwortverlust = permanenter Datenverlust. Kein Master-Key vorhanden."
+    },
+    "map": {
+        "loading": "Lade Kartendaten...",
+        "error": "Fehler beim Laden der Flurstücke:",
+        "layers": {
+            "parcels": "Flurstücke"
+        },
+        "tooltips": {
+            "clickToSelect": "Klicken zum Auswählen"
+        }
+    },
+    "common": {
+        "unknown": "Unbekannt"
+    },
+    "intelligence": {
+        "title": "Intelligence Feed",
+        "subtitle": "Echtzeit-Analyse kommunaler Entscheidungen",
+        "liveConnection": "Live-Verbindung",
+        "incomingSignals": "Eingehende Signale",
+        "analystConsole": "AI Analyst Konsole",
+        "consoleTitle": "Analyst Konsole v2.0",
+        "processing": "VERARBEITUNG",
+        "ready": "BEREIT",
+        "initialized": "FlurPilot Intelligence initialisiert.",
+        "readyForQueries": "Bereit für Anfragen...",
+        "inputPlaceholder": "FlurPilot Intelligence fragen...",
+        "stop": "Stop",
+        "loadingFeed": "Lade Feed...",
+        "noSignals": "Keine Signale erkannt.",
+        "untitled": "Unbenanntes Dokument",
+        "region": "Region",
+        "date": "Datum"
+    },
+    "trust": {
+        "title": "Trust Center",
+        "subtitle": "Transparenzbericht & Sicherheitsstatistiken",
+        "reportTitle": "Transparenzbericht",
+        "reportSubtitle": "Echtzeit-Sicherheitsmetriken und Compliance-Status",
+        "systemLogs": "System-Architektur Logs",
+        "compliance": "Compliance & Zertifikate",
+        "compliant": "KONFORM",
+        "aligned": "ANGELEHNT",
+        "transparencyNote": "Hinweis zur Transparenz",
+        "transparencyBody": "Dieser Bericht wird automatisch aus den System-Logs generiert. Er dient als Nachweis für die Integrität der Datenverarbeitung.",
+        "metrics": {
+            "piiRedacted": "PII Geschwärzt",
+            "piiDesc": "Personenbezogene Daten entfernt",
+            "threatsBlocked": "Bedrohungen blockiert",
+            "threatsDesc": "WAF & Rate Limiting Events",
+            "uptime": "System Uptime",
+            "uptimeDesc": "Letzte 30 Tage",
+            "auditsPassed": "Audits Bestanden",
+            "auditsDesc": "Interne Sicherheitsprüfungen"
+        },
+        "verifiedSources": {
+            "title": "Verifizierte Quellen",
+            "live": "LIVE",
+            "refresh": "Quellen aktualisieren"
+        },
+        "status": {
+            "online": "ONLINE",
+            "maintenance": "WARTUNG",
+            "offline": "OFFLINE"
+        }
+    }
+}

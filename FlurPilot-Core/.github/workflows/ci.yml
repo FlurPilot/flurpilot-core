@@ -1,0 +1,164 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  test-worker:
+    name: 🐍 Test Worker (Python)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./apps/worker
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Install Poetry
+        run: |
+          pip install poetry
+          poetry config virtualenvs.create false
+      - name: Install Dependencies
+        run: poetry install
+      - name: Lint with Flake8
+        run: poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+      - name: Test with Pytest
+        run: poetry run pytest
+
+  test-web:
+    name: ⚡ Test Web (Turbo)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - name: Install Dependencies
+        run: npm ci
+      - name: Turbo Lint & Build
+        run: npx turbo run lint build
+
+  test-geometry-engine:
+    name: 🦀 Test Geometry Engine (Rust)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./packages/geometry-engine
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-action@stable
+        with:
+          toolchain: stable
+      
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "./packages/geometry-engine -> target"
+      
+      - name: Run cargo check
+        run: cargo check --all-features
+      
+      - name: Run cargo fmt
+        run: cargo fmt -- --check
+      
+      - name: Run cargo clippy
+        run: cargo clippy --all-features -- -D warnings
+      
+      - name: Run cargo test
+        run: cargo test --all-features
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install Maturin
+        run: pip install maturin
+      
+      - name: Build Python package
+        run: maturin build --release
+      
+      - name: Install Python package
+        run: pip install target/wheels/geometry_engine*.whl
+      
+      - name: Install pytest
+        run: pip install pytest
+      
+      - name: Run Python tests
+        run: pytest tests/ -v
+      
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: geometry-engine-wheels
+          path: target/wheels/
+          retention-days: 7
+
+  security-scan:
+    name: 🛡️ Security Scan
+    runs-on: ubuntu-latest
+    needs: [test-worker, test-web, test-geometry-engine]
+    permissions:
+      security-events: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      # --- Web App ---
+      - name: Build Web Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./apps/web
+          file: ./apps/web/Dockerfile
+          push: false
+          tags: flurpilot-web:latest
+          outputs: type=docker,dest=/tmp/web.tar
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      
+      - name: Scan Web Image (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          input: /tmp/web.tar
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+      # --- Worker App ---
+      - name: Build Worker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./apps/worker
+          file: ./apps/worker/Dockerfile
+          push: false
+          tags: flurpilot-worker:latest
+          outputs: type=docker,dest=/tmp/worker.tar
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Scan Worker Image (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          input: /tmp/worker.tar
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'

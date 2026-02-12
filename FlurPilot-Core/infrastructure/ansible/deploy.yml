@@ -1,0 +1,43 @@
+---
+- name: Deploy FlurPilot Core
+  hosts: all
+  become: true
+  vars:
+    project_dir: /opt/flurpilot
+
+  tasks:
+    - name: Ensure Docker dependencies are present
+      apt:
+        name:
+          - git
+          - docker-compose-plugin
+        state: present
+        update_cache: yes
+
+    - name: Create project directory
+      file:
+        path: "{{ project_dir }}"
+        state: directory
+        mode: '0755'
+        owner: deployer
+        group: docker
+
+    - name: Copy Docker Compose Production
+      copy:
+        src: ../../docker-compose.prod.yml
+        dest: "{{ project_dir }}/docker-compose.yml"
+        owner: deployer
+        mode: '0644'
+
+    # Pulling images requires authentication with GHCR usually
+    # For public images it's fine. For private, we need 'docker login'
+    
+    - name: Start Services
+      shell: "docker compose up -d"
+      args:
+        chdir: "{{ project_dir }}"
+      environment:
+        # Inject Secrets from Ansible Inventory/Vault
+        SUPABASE_URL: "{{ check_env_supabase_url }}"
+        SUPABASE_ANON_KEY: "{{ check_env_supabase_anon }}"
+        DB_PASSWORD: "{{ check_env_db_pass }}"

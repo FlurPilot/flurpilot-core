@@ -1,0 +1,80 @@
+---
+title: Introduction
+description: 'FlurPilot - AI-powered land development intelligence'
+---
+
+<img
+  className="block dark:hidden"
+  src="/logo/light.svg"
+  alt="FlurPilot Logo"
+/>
+<img
+  className="hidden dark:block"
+  src="/logo/dark.svg"
+  alt="FlurPilot Logo"
+/>
+
+# FlurPilot Documentation
+
+Welcome to FlurPilot - the AI-powered platform for land development intelligence in Germany.
+
+## What is FlurPilot?
+
+FlurPilot automates the discovery and analysis of development opportunities across German municipalities. By combining official municipal data sources with AI-powered analysis, we help developers, architects, and investors identify parcels with high development potential.
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="Virtual Parcel Engine" icon="map" href="/features/parcel-engine">
+    Calculate net parcel areas by subtracting buildings from field blocks using high-performance Rust geometry engine
+  </Card>
+  <Card title="Document Discovery" icon="file-magnifying-glass" href="/features/document-search">
+    Search municipal websites for development-relevant documents (B-Plans, resolutions) using Brave Search API
+  </Card>
+  <Card title="AI Analysis" icon="robot" href="/features/ai-analysis">
+    LLM-powered analysis of documents with observability via Arize Phoenix
+  </Card>
+  <Card title="Zero Trust Architecture" icon="shield-check">
+    Privacy-first design with client-side key management and no data egress
+  </Card>
+</CardGroup>
+
+## Architecture Overview
+
+```
+┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
+│   Next.js Web   │────▶│  Python Worker   │────▶│   Supabase DB   │
+│     (FE)        │     │  (BE + Crawler)  │     │   (Postgres)    │
+└─────────────────┘     └──────────────────┘     └─────────────────┘
+                               │
+          ┌────────────────────┼────────────────────┐
+          ▼                    ▼                    ▼
+   ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+   │Brave Search │     │  Rust Geo    │     │Arize Phoenix│
+   │    API      │     │   Engine     │     │Observability│
+   └─────────────┘     └──────────────┘     └─────────────┘
+```
+
+## Tech Stack
+
+- **Frontend**: Next.js, TypeScript, Tailwind CSS
+- **Backend**: Python, FastAPI, Poetry
+- **Database**: Supabase (PostgreSQL + PostGIS)
+- **AI**: OpenRouter (Claude, GPT-4)
+- **Search**: Brave Search API
+- **Geometry**: Rust + PyO3
+- **Observability**: Arize Phoenix
+- **Infrastructure**: Hetzner Cloud, Terraform
+
+## Quick Links
+
+- [Quick Start Guide](/quickstart)
+- [API Reference](/api-reference/introduction)
+- [GitHub Repository](https://github.com/flurpilot/flurpilot-core)
+
+## Support
+
+Need help? Join our community or contact support:
+
+- 💬 [GitHub Discussions](https://github.com/flurpilot/flurpilot-core/discussions)
+- 📧 support@flurpilot.de

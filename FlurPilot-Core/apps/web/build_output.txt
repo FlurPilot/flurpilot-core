@@ -1,0 +1,80 @@
+﻿node.exe : ÔÜá Warning: Next.js inferred your workspace root, 
+but it may not be correct.
+In C:\Program Files\nodejs\npx.ps1:29 Zeichen:3
++   & $NODE_EXE $NPX_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (ÔÜá Warning: Ne.. 
+   .not be correct.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ We detected multiple lockfiles and selected the directory of 
+C:\Users\Notebook\AntiGravity\FlurPilot\package-lock.json as 
+the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js 
+config, or consider removing one of the lockfiles if it's not 
+needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-co
+nfig-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\Users\Notebook\AntiGravity\FlurPilot\FlurPilot-Core\pac
+kage-lock.json
+
+Ôû▓ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+ÔÜá The "middleware" file convention is deprecated. Please use 
+"proxy" instead. Learn more: 
+https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+Ô£ô Compiled successfully in 20.1s
+  Running TypeScript ...
+  Collecting page data using 7 workers ...
+ÔÜá Using edge runtime on a page currently disables static 
+generation for that page
+  Generating static pages using 7 workers (0/24) ...
+  Generating static pages using 7 workers (6/24) 
+  Generating static pages using 7 workers (12/24) 
+  Generating static pages using 7 workers (18/24) 
+Ô£ô Generating static pages using 7 workers (24/24) in 1063.5ms
+  Finalizing page optimization ...
+
+Route (app)
+Ôöî Ôùï /_not-found
+Ôö£ ÔùÅ /[locale]
+Ôöé Ôö£ /de
+Ôöé Ôöö /en
+Ôö£ ÔùÅ /[locale]/agb
+Ôöé Ôö£ /de/agb
+Ôöé Ôöö /en/agb
+Ôö£ ÔùÅ /[locale]/auth/mfa
+Ôöé Ôö£ /de/auth/mfa
+Ôöé Ôöö /en/auth/mfa
+Ôö£ ÔùÅ /[locale]/dashboard
+Ôöé Ôö£ /de/dashboard
+Ôöé Ôöö /en/dashboard
+Ôö£ ÔùÅ /[locale]/dashboard/intelligence
+Ôöé Ôö£ /de/dashboard/intelligence
+Ôöé Ôöö /en/dashboard/intelligence
+Ôö£ ãÆ /[locale]/dashboard/trust
+Ôö£ ÔùÅ /[locale]/datenschutz
+Ôöé Ôö£ /de/datenschutz
+Ôöé Ôöö /en/datenschutz
+Ôö£ ÔùÅ /[locale]/impressum
+Ôöé Ôö£ /de/impressum
+Ôöé Ôöö /en/impressum
+Ôö£ ÔùÅ /[locale]/login
+Ôöé Ôö£ /de/login
+Ôöé Ôöö /en/login
+Ôö£ ÔùÅ /[locale]/map
+Ôöé Ôö£ /de/map
+Ôöé Ôöö /en/map
+Ôö£ ãÆ /api/chat
+Ôöö ãÆ /api/search
+
+
+ãÆ Proxy (Middleware)
+
+Ôùï  (Static)   prerendered as static content
+ÔùÅ  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ãÆ  (Dynamic)  server-rendered on demand
+

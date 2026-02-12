@@ -1,0 +1,22 @@
+{
+    "name": "flurpilot-core-monorepo",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "dev": "turbo run dev",
+        "build": "turbo run build",
+        "lint": "turbo run lint",
+        "preview": "docker compose -f docker-compose.prod.yml -f docker-compose.preview.yml -p flurpilot up --build -d",
+        "docker:up": "docker compose -f docker-compose.prod.yml -p flurpilot up -d",
+        "docker:down": "docker compose -f docker-compose.prod.yml -p flurpilot down",
+        "docker:logs": "docker compose -f docker-compose.prod.yml -p flurpilot logs -f"
+    },
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "devDependencies": {
+        "turbo": "latest"
+    },
+    "packageManager": "npm@10.0.0"
+}

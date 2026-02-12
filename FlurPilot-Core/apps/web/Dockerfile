@@ -1,0 +1,35 @@
+FROM node:20-bookworm-slim AS base
+
+# Install dependencies only when needed
+FROM base AS deps
+WORKDIR /app
+COPY package.json package-lock.json* ./
+RUN npm ci
+
+# Rebuild the source code only when needed
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN npm run build
+
+# Production image, copy all the files and run next
+# Security Hardening: Use Google Distroless (No Shell, No Package Manager)
+FROM gcr.io/distroless/nodejs20-debian12 AS runner
+WORKDIR /app
+ENV NODE_ENV production
+
+# Distroless runs as nonroot (uid 65532) by default, or we can specify
+# valid users are usually 'nonroot'
+# We don't need to create users in distroless, it comes with one.
+
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nonroot:nonroot /app/.next/standalone ./
+COPY --from=builder --chown=nonroot:nonroot /app/.next/static ./.next/static
+
+USER nonroot
+EXPOSE 3000
+ENV PORT 3000
+
+# Distroless entrypoint is 'node', so just pass the file
+CMD ["server.js"]

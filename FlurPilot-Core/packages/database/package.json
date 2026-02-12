@@ -1,0 +1,9 @@
+{
+    "name": "@flurpilot/database",
+    "version": "0.0.0",
+    "main": "index.ts",
+    "dependencies": {
+        "@supabase/supabase-js": "^2.0.0",
+        "zod": "^3.0.0"
+    }
+}

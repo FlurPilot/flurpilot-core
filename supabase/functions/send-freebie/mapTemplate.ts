@@ -1,0 +1,560 @@
+export const MAP_HTML = `<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlurPilot First-Mover Map | Demo-Lead</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8fafc; /* Slate-50 */
+            min-height: 100vh;
+            color: #0f172a; /* Slate-900 */
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: #0f172a;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+            color: white;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .badge {
+            background: #ecfdf5;
+            color: #059669;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid #d1fae5;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .hero h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: #0f172a;
+        }
+
+        .hero p {
+            color: #64748b;
+            font-size: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Map Container */
+        .map-wrapper {
+            background: white;
+            border-radius: 16px;
+            padding: 4px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        #map {
+            height: 380px;
+            border-radius: 12px;
+            z-index: 1;
+            background: #f1f5f9;
+        }
+
+        /* Lead Card */
+        .lead-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .lead-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+        }
+
+        .lead-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .lead-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .lead-title h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .score-badge {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .score-badge::before {
+            content: '●';
+            font-size: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .lead-status {
+            background: #ecfdf5;
+            color: #059669;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .lead-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .lead-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .lead-item label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .lead-item span {
+            font-size: 15px;
+            font-weight: 500;
+            color: #334155;
+        }
+
+        .lead-item span.highlight {
+            color: #059669;
+            font-weight: 600;
+        }
+
+        /* Source Link */
+        .source-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 24px;
+            padding: 12px 20px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .source-link:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+            border-color: #cbd5e1;
+        }
+
+        .source-link svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 100%);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            border: 1px solid #d1fae5;
+            margin-bottom: 24px;
+        }
+
+        .cta-section h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .cta-section p {
+            color: #475569;
+            font-size: 15px;
+            margin-bottom: 24px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-section p strong {
+            color: #059669;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            background: #0f172a;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.2);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            background: #1e293b;
+            box-shadow: 0 6px 24px rgba(15, 23, 42, 0.3);
+        }
+
+        .cta-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .footer a {
+            color: #64748b;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: #0f172a;
+        }
+
+        /* Leaflet Customization */
+        .leaflet-popup-content-wrapper {
+            background: white;
+            color: #0f172a;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .leaflet-popup-content {
+            margin: 16px;
+        }
+
+        .leaflet-popup-tip {
+            background: white;
+        }
+
+        .popup-title {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #059669;
+        }
+
+        .popup-detail {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .container {
+                padding: 16px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+
+            .hero h1 {
+                font-size: 24px;
+            }
+
+            #map {
+                height: 280px;
+            }
+
+            .lead-header {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .lead-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">⊕</div>
+                <span class="logo-text">FlurPilot</span>
+            </div>
+            <span class="badge">Demo Lead 2026</span>
+        </div>
+
+        <!-- Hero -->
+        <div class="hero">
+            <h1>First-Mover Map</h1>
+            <p>Ein verifizierter Lead – direkt aus dem Ratsinformationssystem extrahiert und georeferenziert.</p>
+        </div>
+
+        <!-- Map -->
+        <div class="map-wrapper">
+            <div id="map"></div>
+        </div>
+
+        <!-- Lead Card -->
+        <div class="lead-card">
+            <div class="lead-header">
+                <div class="lead-title">
+                    <h2>Overhetfeld, Niederkrüchten</h2>
+                    <span class="score-badge">Score 8/9</span>
+                </div>
+                <span class="lead-status">Hohe Priorität</span>
+            </div>
+
+            <div class="lead-grid">
+                <div class="lead-item">
+                    <label>Kommune</label>
+                    <span>Niederkrüchten</span>
+                </div>
+                <div class="lead-item">
+                    <label>Bundesland</label>
+                    <span>Nordrhein-Westfalen</span>
+                </div>
+                <div class="lead-item">
+                    <label>B-Plan Nr.</label>
+                    <span class="highlight">127</span>
+                </div>
+                <div class="lead-item">
+                    <label>Bezeichnung</label>
+                    <span>SO Freiflächen-PV Overhetfeld</span>
+                </div>
+                <div class="lead-item">
+                    <label>Gemarkung / Flur</label>
+                    <span>Overhetfeld / Flur 9</span>
+                </div>
+                <div class="lead-item">
+                    <label>Flurstücke</label>
+                    <span class="highlight">24, 25, 26</span>
+                </div>
+                <div class="lead-item">
+                    <label>Beschlussdatum</label>
+                    <span>25.04.2023</span>
+                </div>
+                <div class="lead-item">
+                    <label>Status</label>
+                    <span class="highlight">Aufstellungsbeschluss</span>
+                </div>
+            </div>
+
+            <a href="https://www.niederkruechten.de" target="_blank" class="source-link">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                </svg>
+                Original-Quelle anzeigen (Ratsinformationssystem)
+            </a>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <h3>Das war EIN Lead.</h3>
+            <p>FlurPilot liefert Ihnen wöchentlich <strong>5-15 verifizierte Geo-Leads</strong> aus ganz Deutschland – bevor die Konkurrenz davon erfährt.</p>
+            <a href="mailto:info@stephanochmann.de?subject=FlurPilot%20Demo%20anfragen" class="cta-button">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                </svg>
+                Demo anfordern
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Rechtlicher Hinweis:</strong> Alle Daten stammen aus öffentlich zugänglichen Quellen (Ratsinformationssysteme). Dieses Dokument dient zu Informationszwecken.</p>
+            <p style="margin-top: 12px;">© 2026 FlurPilot | <a href="https://flurpilot.de">flurpilot.de</a> | <a href="mailto:info@stephanochmann.de">info@stephanochmann.de</a></p>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Initialize map centered on Overhetfeld
+        const map = L.map('map', {
+            scrollWheelZoom: false
+        }).setView([51.2328, 6.2267], 15);
+
+        // Add light tile layer (Positron)
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | © <a href="https://carto.com/">CARTO</a>',
+            maxZoom: 19
+        }).addTo(map);
+
+        // GeoJSON for the plots (converted from KML coordinates)
+        const plotsGeoJSON = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "Flurstück 24",
+                        "flur": "9",
+                        "gemarkung": "Overhetfeld"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [6.2234, 51.2345],
+                            [6.2267, 51.2345],
+                            [6.2267, 51.2312],
+                            [6.2234, 51.2312],
+                            [6.2234, 51.2345]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "Flurstück 25",
+                        "flur": "9",
+                        "gemarkung": "Overhetfeld"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [6.2267, 51.2345],
+                            [6.2300, 51.2345],
+                            [6.2300, 51.2312],
+                            [6.2267, 51.2312],
+                            [6.2267, 51.2345]
+                        ]]
+                    }
+                }
+            ]
+        };
+
+        // Style for the polygons
+        const plotStyle = {
+            color: '#10b981',
+            weight: 3,
+            opacity: 1,
+            fillColor: '#10b981',
+            fillOpacity: 0.25
+        };
+
+        // Add GeoJSON layer
+        L.geoJSON(plotsGeoJSON, {
+            style: plotStyle,
+            onEachFeature: function(feature, layer) {
+                const popup = \`
+                    <div class="popup-title">\${feature.properties.name}</div>
+                    <div class="popup-detail">Flur \${feature.properties.flur}, Gemarkung \${feature.properties.gemarkung}</div>
+                \`;
+                layer.bindPopup(popup);
+            }
+        }).addTo(map);
+
+        // Add marker at center
+        const marker = L.marker([51.2328, 6.2267]).addTo(map);
+        marker.bindPopup(\`
+            <div class="popup-title">B-Plan Nr. 127</div>
+            <div class="popup-detail">SO Freiflächen-PV Overhetfeld<br>Score: 8/9 • Hohe Priorität</div>
+        \`).openPopup();
+    </script>
+</body>
+</html>`;

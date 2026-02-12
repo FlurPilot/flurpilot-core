@@ -1,0 +1,105 @@
+services:
+  caddy:
+    image: caddy:alpine
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - flurpilot-net
+    depends_on:
+      - web
+
+  web:
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/flurpilot-web:latest
+    restart: always
+    # Ports removed: Access only via Caddy
+    environment:
+      - NODE_ENV=production
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+    networks:
+      - flurpilot-net
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  worker:
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/flurpilot-worker:latest
+    restart: always
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - REDIS_URL=redis://redis:6379
+      - WFS_URL_FIELDS=https://geoportal.bayern.de/gdi/wfs/feldbloecke
+      - WFS_URL_BUILDINGS=https://geoportal.bayern.de/gdi/wfs/hausumringe
+    depends_on:
+      redis:
+        condition: service_started
+      db:
+        condition: service_healthy
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - flurpilot-net
+
+  redis:
+    image: redis:alpine
+    restart: always
+    networks:
+      - flurpilot-net
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # In production, we assume a managed database or a hardened container on the volume
+  # For MVP cost-saving (1 server), we run Postgres/PostGIS locally on the dedicated volume
+  db:
+    image: supabase/postgres:15.1.1.78
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - /mnt/flurpilot-data/postgres:/var/lib/postgresql/data # Mounted Volume
+    networks:
+      - flurpilot-net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  flurpilot-net:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:

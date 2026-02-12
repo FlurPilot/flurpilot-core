@@ -1,0 +1,122 @@
+---
+title: Quickstart
+description: 'Get started with FlurPilot in minutes'
+---
+
+# Quick Start
+
+Get FlurPilot running locally in under 5 minutes.
+
+## Prerequisites
+
+- Python 3.12+
+- Node.js 20+
+- Rust (for geometry engine)
+- Supabase account
+
+## 1. Clone Repository
+
+```bash
+git clone https://github.com/flurpilot/flurpilot-core.git
+cd flurpilot-core
+```
+
+## 2. Environment Setup
+
+```bash
+# Copy environment template
+cp apps/worker/.env.example apps/worker/.env
+
+# Edit .env with your keys
+nano apps/worker/.env
+```
+
+Required environment variables:
+
+```bash
+# Supabase
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+
+# AI (OpenRouter)
+OPENROUTER_API_KEY=sk-or-...
+AI_MODEL=anthropic/claude-opus-4.6
+
+# Search (Brave - replaces deprecated Bing)
+BRAVE_API_KEY=...
+
+# Observability (Optional but recommended)
+PHOENIX_API_KEY=...
+
+# Email (Optional)
+RESEND_API_KEY=...
+```
+
+## 3. Install Dependencies
+
+### Backend
+
+```bash
+cd apps/worker
+pip install poetry
+poetry install
+```
+
+### Frontend
+
+```bash
+cd apps/web
+npm install
+```
+
+### Rust Geometry Engine
+
+```bash
+cd packages/geometry-engine
+pip install maturin
+maturin develop --release
+```
+
+## 4. Database Setup
+
+Run migrations in Supabase SQL Editor:
+
+```sql
+-- See packages/database/supabase/migrations/
+-- Run files in chronological order
+```
+
+## 5. Start Development
+
+### Backend
+
+```bash
+cd apps/worker
+poetry run python main.py
+```
+
+### Frontend
+
+```bash
+cd apps/web
+npm run dev
+```
+
+## 6. Verify Installation
+
+Test the API:
+
+```bash
+# Test geometry engine
+curl http://localhost:8000/health
+
+# Test search
+python tests/test_brave_search.py
+```
+
+## Next Steps
+
+- [Architecture Overview](/architecture)
+- [API Documentation](/api-reference/introduction)
+- [Development Guide](/development/setup)

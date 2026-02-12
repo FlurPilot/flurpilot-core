@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # --- Frontend (Next.js 16) ---
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: flurpilot-web
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./apps/web:/app
+      - /app/node_modules
+    networks:
+      - neo-trust-net
+
+  # --- Backend (Python 3.12 Worker) ---
+  worker:
+    build:
+      context: ./apps/worker
+      dockerfile: Dockerfile
+    container_name: flurpilot-worker
+    command: poetry run python main.py
+    environment:
+      - PYTHONUNBUFFERED=1
+      - REDIS_URL=redis://redis:6379/0
+      # gVisor is DISABLED for Local/Windows dev environment
+      # usage: standard process isolation
+    volumes:
+      - ./apps/worker:/app
+    depends_on:
+      - redis
+    networks:
+      - neo-trust-net
+
+  # --- Message Queue (BullMQ) ---
+  redis:
+    image: redis:7-alpine
+    container_name: flurpilot-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - neo-trust-net
+
+  # --- Database (Supabase Local Mock) ---
+  # Using standard Postgres as placeholder for Supabase local dev
+  db:
+    image: supabase/postgres:15.1.0.117
+    container_name: flurpilot-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - neo-trust-net
+
+networks:
+  neo-trust-net:
+    driver: bridge

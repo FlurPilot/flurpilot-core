@@ -1,0 +1,10 @@
+# FlurPilot Robots.txt
+# Auto-generated - do not edit manually
+
+User-agent: *
+Allow: /
+Allow: /loesungen/
+
+# Sitemaps
+Sitemap: https://flurpilot.de/sitemap.xml
+Sitemap: https://flurpilot.de/sitemap-loesungen.xml

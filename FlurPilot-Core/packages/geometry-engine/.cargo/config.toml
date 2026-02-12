@@ -1,0 +1,9 @@
+[build]
+target-dir = "C:/tmp/geometry-target"
+
+[profile.dev]
+# Reduce parallel codegen units to minimize file lock issues on Windows
+codegen-units = 1
+
+[profile.release]
+codegen-units = 1
