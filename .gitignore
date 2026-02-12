@@ -43,5 +43,8 @@ test_output.txt
 test_result.txt
 license-report.csv
 
+# Sensitive files
+.agent/rules/api-keys.md
+
 # OS files
 Thumbs.db
