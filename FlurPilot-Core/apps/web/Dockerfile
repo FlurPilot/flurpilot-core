@@ -5,7 +5,6 @@ FROM base AS deps
 WORKDIR /app
 COPY apps/web/package.json ./apps/web/package.json
 COPY apps/web/package-lock.json* ./apps/web/
-COPY apps/web/lib/geometry-engine/package.json ./apps/web/lib/geometry-engine/package.json
 RUN cd apps/web && npm install
 
 # Rebuild the source code only when needed
