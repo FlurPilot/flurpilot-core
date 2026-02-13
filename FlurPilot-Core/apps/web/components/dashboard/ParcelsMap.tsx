@@ -191,7 +191,7 @@ export default function ParcelsMap({ onParcelSelect, focusedParcel }: ParcelsMap
             >
                 {/* 1. Real Parcels Layer */}
                 {realParcels && (
-                    <Source id="real-parcels" type="geojson" data={realParcels}>
+                    <Source id="real-parcels" type="geojson" data={{ type: 'FeatureCollection', features: realParcels }}>
                         <Layer {...parcelFillLayer} />
                         <Layer {...parcelLineLayer} />
                     </Source>
@@ -199,7 +199,7 @@ export default function ParcelsMap({ onParcelSelect, focusedParcel }: ParcelsMap
 
                 {/* 2. Virtual Parcels Layer (On Top) */}
                 {virtualParcels && (
-                    <Source id="virtual-parcels" type="geojson" data={virtualParcels}>
+                    <Source id="virtual-parcels" type="geojson" data={{ type: 'FeatureCollection', features: virtualParcels }}>
                         <Layer {...virtualFillLayer} />
                         <Layer {...virtualLineLayer} />
                     </Source>
