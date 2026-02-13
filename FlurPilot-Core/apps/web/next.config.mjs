@@ -4,6 +4,7 @@ const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    output: 'standalone',
     // Turbopack config (Next.js 16 default)
     turbopack: {
         // Turbopack supports async WASM out of the box
