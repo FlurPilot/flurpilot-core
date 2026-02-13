@@ -11,11 +11,10 @@ jobs:
   test-worker:
     name: 🐍 Test Worker (Python)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./apps/worker
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: flurpilot-core
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -26,7 +25,7 @@ jobs:
           pip install poetry
           poetry config virtualenvs.create false
       - name: Install Dependencies
-        run: poetry install
+        run: cd flurpilot-core/apps/worker && poetry install
       - name: Install Linting Tools
         run: pip install flake8 pytest
       - name: Lint with Flake8
@@ -39,24 +38,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: flurpilot-core
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
+          cache-dependency-path: flurpilot-core/package-lock.json
       - name: Install Dependencies
-        run: npm ci
+        run: cd flurpilot-core && npm ci
       - name: Turbo Lint & Build
-        run: npx turbo run lint build --force
+        run: cd flurpilot-core && npx turbo run lint build --force
 
   test-geometry-engine:
     name: 🦀 Test Geometry Engine (Rust)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./packages/geometry-engine
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: flurpilot-core
       
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
@@ -64,19 +65,19 @@ jobs:
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
         with:
-          workspaces: "./packages/geometry-engine -> target"
+          workspaces: "./flurpilot-core/packages/geometry-engine -> target"
       
       - name: Run cargo check
-        run: cargo check --all-features
+        run: cd flurpilot-core/packages/geometry-engine && cargo check --all-features
       
       - name: Run cargo fmt
-        run: cargo fmt -- --check
+        run: cd flurpilot-core/packages/geometry-engine && cargo fmt -- --check
       
       - name: Run cargo clippy
-        run: cargo clippy --all-features -- -D warnings
+        run: cd flurpilot-core/packages/geometry-engine && cargo clippy --all-features -- -D warnings
       
       - name: Run cargo test
-        run: cargo test --all-features
+        run: cd flurpilot-core/packages/geometry-engine && cargo test --all-features
       
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -114,6 +115,8 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: flurpilot-core
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -123,8 +126,8 @@ jobs:
       - name: Build Web Image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: ./apps/web/Dockerfile
+          context: ./flurpilot-core
+          file: ./flurpilot-core/apps/web/Dockerfile
           push: false
           tags: flurpilot-web:latest
           outputs: type=docker,dest=/tmp/web.tar
@@ -145,8 +148,8 @@ jobs:
       - name: Build Worker Image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: ./apps/worker/Dockerfile
+          context: ./flurpilot-core
+          file: ./flurpilot-core/apps/worker/Dockerfile
           push: false
           tags: flurpilot-worker:latest
           outputs: type=docker,dest=/tmp/worker.tar

@@ -22,16 +22,18 @@ jobs:
         include:
           - app: web
             image_suffix: flurpilot-web
-            context: .
-            dockerfile: apps/web/Dockerfile
+            context: ./flurpilot-core
+            dockerfile: ./flurpilot-core/apps/web/Dockerfile
           - app: worker
             image_suffix: flurpilot-worker
-            context: .
-            dockerfile: apps/worker/Dockerfile
+            context: ./flurpilot-core
+            dockerfile: ./flurpilot-core/apps/worker/Dockerfile
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          path: flurpilot-core
 
       - name: Log in to the Container registry
         uses: docker/login-action@v3
