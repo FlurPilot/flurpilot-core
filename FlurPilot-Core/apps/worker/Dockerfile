@@ -13,7 +13,6 @@ WORKDIR /app
 
 # Copy config from root context
 COPY pyproject.toml poetry.lock* ./apps/worker/
-COPY packages/geometry-engine/python/pyproject.toml ./packages/geometry-engine/python/ 2>/dev/null || true
 
 # Copy poetry files to app dir
 COPY apps/worker/pyproject.toml apps/worker/poetry.lock* ./apps/worker/
