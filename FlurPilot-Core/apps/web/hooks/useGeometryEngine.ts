@@ -17,7 +17,7 @@ export function useGeometryEngine() {
         async function loadWasm() {
             try {
                 // Dynamic import for WASM module
-                const mod = await import('geometry-engine');
+                const mod = await import('../lib/geometry-engine/geometry_engine');
                 await mod.default(); // Initialize WASM
                 setEngine(mod);
                 setIsReady(true);
