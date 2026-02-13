@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import type { initSync } from 'geometry-engine'; // Type-only import if available, or any
 
 type GeometryEngineModule = {
     calculate_virtual_parcel_wasm: (json: string) => string;
     default: unknown;
-    initSync: typeof initSync;
+    initSync: unknown;
 };
 
 export function useGeometryEngine() {
