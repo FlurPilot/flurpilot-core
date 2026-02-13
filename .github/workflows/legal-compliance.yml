@@ -1,0 +1,76 @@
+name: Legal Compliance & Security Audit
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  license-audit:
+    runs-on: ubuntu-latest
+    name: License Compliance Scan
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # --- PYTHON WORKER SCAN ---
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python Dependencies
+        working-directory: ./apps/worker
+        run: |
+          pip install poetry
+          pip install -r requirements.txt
+          pip install pip-licenses
+
+      - name: Run Python License Check
+        working-directory: ./apps/worker
+        run: python scripts/check_licenses.py
+
+      # --- NODE WEB SCAN ---
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Node Dependencies
+        working-directory: ./apps/web
+        run: npm ci
+
+      - name: Run Node License Check
+        working-directory: ./apps/web
+        run: node scripts/check-licenses.js
+
+      # --- ARTIFACT UPLOAD ---
+      - name: Upload Compliance Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compliance-reports
+          path: |
+            apps/worker/license-report.md
+            apps/web/license-report.csv
+
+  sbom-generation:
+    runs-on: ubuntu-latest
+    name: Generate SBOM (Syft)
+    needs: license-audit
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Generate SBOM (SPDX)
+        uses: anchore/sbom-action@v0
+        with:
+          format: spdx-json
+          output-file: flurpilot-sbom.spdx.json
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: flurpilot-sbom.spdx.json

@@ -1,0 +1,82 @@
+name: Infracost
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'infrastructure/**'
+      - '.github/workflows/infracost.yml'
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'infrastructure/**'
+
+jobs:
+  infracost:
+    name: 💰 Cost Estimation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    
+    steps:
+      # Checkout the base branch for comparison
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          path: base
+
+      # Checkout the PR branch
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          path: pr
+
+      # Setup Infracost
+      - name: Setup Infracost
+        uses: infracost/actions/setup@v3
+        with:
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
+
+      # Generate baseline cost estimate
+      - name: Generate baseline cost
+        run: |
+          infracost breakdown --path=base/infrastructure \
+                              --format=json \
+                              --out-file=/tmp/infracost-base.json
+        continue-on-error: true
+
+      # Generate cost estimate for PR
+      - name: Generate PR cost
+        run: |
+          infracost breakdown --path=pr/infrastructure \
+                              --format=json \
+                              --out-file=/tmp/infracost.json
+
+      # Generate diff
+      - name: Generate Infracost diff
+        run: |
+          infracost diff --path=pr/infrastructure \
+                         --compare-to=/tmp/infracost-base.json \
+                         --format=json \
+                         --out-file=/tmp/infracost-diff.json
+        continue-on-error: true
+
+      # Post PR comment
+      - name: Post Infracost comment
+        run: |
+          infracost comment github --path=/tmp/infracost.json \
+                                   --github-token=${{ github.token }} \
+                                   --pull-request=${{ github.event.pull_request.number }} \
+                                   --repo=${{ github.repository }} \
+                                   --behavior=update
+        if: github.event_name == 'pull_request'
+        continue-on-error: true
+
+      # Output summary
+      - name: Output cost summary
+        run: |
+          echo "## 💰 Infrastructure Cost Estimate" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          infracost output --path=/tmp/infracost.json --format=table >> $GITHUB_STEP_SUMMARY
