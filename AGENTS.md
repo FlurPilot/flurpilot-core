@@ -1,8 +1,8 @@
 # FlurPilot Core - Project Context
 
 ## Repository
-**GitHub URL:** https://github.com/FlurPilot/-flurpilot-core
-**Status:** Private repository, successfully pushed on 2026-02-12
+**GitHub URL:** https://github.com/stochmann75-spec/flurpilot-core
+**Status:** Private repository
 **Branch:** main
 
 ## Project Structure
