@@ -1,7 +1,7 @@
 # FlurPilot Core - Project Context
 
 ## Repository
-**GitHub URL:** https://github.com/stochmann75-spec/flurpilot-core
+**GitHub URL:** https://github.com/FlurPilot/flurpilot-core
 **Status:** Private repository
 **Branch:** main
 
@@ -37,6 +37,27 @@
 - PLAN-stack-optimization.md: All 4 phases COMPLETE
 - Repository is private under FlurPilot organization
 
+## CI/CD Status (All Fixed)
+- ✅ CI - geometry-engine embedded, env vars for build
+- ✅ Build & Push Docker - context/path fixes, standalone output
+- ✅ Legal Compliance - paths corrected
+- ✅ Infracost - configured for infrastructure changes
+
+## Code Changes Made
+- `FlurPilot-Core/apps/web/lib/geometry-engine/` - WASM embedded directly
+- `FlurPilot-Core/apps/web/next.config.mjs` - added standalone output
+- `FlurPilot-Core/apps/web/Dockerfile` - build-args for env vars
+- `FlurPilot-Core/apps/worker/Dockerfile` - simplified paths
+- `.github/workflows/*.yml` - multiple fixes for paths and context
+
+## Local Development
+- Dev server runs on: http://localhost:3001
+- Command: `cd FlurPilot-Core && npm run dev`
+
+## Next Steps
+- Install Docker Desktop for full local development
+- Or deploy to Vercel/Supabase
+
 ## Environment Notes
 - `.env` files contain sensitive data and are NOT committed
 - GitHub Secrets need to be configured for API keys (BRAVE_API_KEY, PHOENIX_API_KEY, etc.)
@@ -44,7 +65,8 @@
 ## Next Steps
 - Configure GitHub Secrets in repository settings ✅ COMPLETED
 - Review and activate GitHub Actions workflows ✅ COMPLETED
-- Continue development based on PLAN-stack-optimization.md roadmap
+- Fix CI/CD issues (geometry-engine, Docker paths) ✅ COMPLETED
+- Local development or deployment
 
 ## GitHub Secrets Status
 All secrets configured: BRAVE_API_KEY, PHOENIX_API_KEY, RESEND_API_KEY, INFRACOST_API_KEY, SUPABASE_SERVICE_ROLE_KEY
