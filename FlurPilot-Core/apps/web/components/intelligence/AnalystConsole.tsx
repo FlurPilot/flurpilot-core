@@ -19,7 +19,8 @@ interface ChatHook {
 }
 
 export default function AnalystConsole() {
-    const chat = useChat() as ChatHook;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const chat = useChat() as unknown as ChatHook;
     const { messages, append, isLoading, stop } = chat;
 
     // Manual input state management since useChat helpers might be missing in this version

@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from 'react';
+import { Feature, Geometry, GeoJsonProperties } from 'geojson';
 import ParcelsMap from '@/components/dashboard/ParcelsMap';
 import { ParcelDetailPanel } from '@/components/dashboard/ParcelDetailPanel';
 import { SearchBar } from '@/components/dashboard/SearchBar';
 import ParcelFeed from '@/components/dashboard/ParcelFeed';
 import { AnimatePresence } from 'framer-motion';
+
+type GeoJSONFeature = Feature<Geometry, GeoJsonProperties>;
 
 interface ParcelFeature {
     id: string;
@@ -50,7 +53,7 @@ export default function DashboardPage() {
 
                 <ParcelsMap
                     onParcelSelect={handleParcelSelect}
-                    focusedParcel={selectedParcel as unknown as { geometry: { type: string; coordinates: number[] } }}
+                    focusedParcel={selectedParcel as unknown as GeoJSONFeature}
                 />
 
                 <AnimatePresence>

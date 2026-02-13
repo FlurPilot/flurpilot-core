@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Map, { Source, Layer, MapRef } from 'react-map-gl/maplibre';
+import { Feature, Geometry, GeoJsonProperties } from 'geojson';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { createClient } from '@/lib/supabase';
 
@@ -44,12 +45,7 @@ const virtualLineLayer = {
     }
 };
 
-interface GeoJSONFeature {
-    geometry: {
-        type: string;
-        coordinates: number[] | number[][] | number[][][];
-    };
-}
+type GeoJSONFeature = Feature<Geometry, GeoJsonProperties>;
 
 interface ParcelsMapProps {
     onParcelSelect?: (feature: GeoJSONFeature) => void;

@@ -1,15 +1,11 @@
 "use client";
 
 import { useLayoutEffect, useState, useCallback } from 'react';
+import { Feature, Geometry, GeoJsonProperties } from 'geojson';
 import { useGeometryEngine } from '@/hooks/useGeometryEngine';
 import { Source, Layer } from 'react-map-gl/maplibre';
 
-interface GeoJSONFeature {
-    geometry: {
-        type: string;
-        coordinates: unknown;
-    };
-}
+type GeoJSONFeature = Feature<Geometry, GeoJsonProperties>;
 
 interface VirtualParcelLayerProps {
     fieldBlock: GeoJSONFeature;
@@ -22,7 +18,7 @@ interface VirtualParcelResult {
 
 export function VirtualParcelLayer({ fieldBlock, buildings }: VirtualParcelLayerProps) {
     const { isReady, calculateVirtualParcel, error } = useGeometryEngine();
-    const [virtualParcel, setVirtualParcel] = useState<unknown>(null);
+    const [virtualParcel, setVirtualParcel] = useState<GeoJSONFeature | null>(null);
 
     const calculateParcel = useCallback(() => {
         if (isReady && fieldBlock && buildings) {
@@ -31,7 +27,7 @@ export function VirtualParcelLayer({ fieldBlock, buildings }: VirtualParcelLayer
                 const buildingJsons = buildings.map(b => JSON.stringify(b.geometry));
 
                 const result = calculateVirtualParcel(fieldJson, buildingJsons) as VirtualParcelResult;
-                setVirtualParcel(JSON.parse(result.virtual_parcel_geojson));
+                setVirtualParcel(JSON.parse(result.virtual_parcel_geojson) as GeoJSONFeature);
             } catch (e) {
                 console.error("Failed to calculate virtual parcel:", e);
             }

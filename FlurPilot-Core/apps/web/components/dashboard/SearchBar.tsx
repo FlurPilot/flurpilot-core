@@ -181,7 +181,7 @@ export function SearchBar({ onSearchResult }: SearchBarProps) {
                                 </span>
                                 {result.type === 'parcel' && (
                                     <span className="text-xs text-slate-400 block truncate">
-                                        {result.properties?.land_use || t('unknown')} • {Math.round(result.area_sqm || 0)} m²
+                                        {String(result.properties?.land_use || t('unknown'))} • {Math.round(result.area_sqm || 0)} m²
                                     </span>
                                 )}
                             </div>
