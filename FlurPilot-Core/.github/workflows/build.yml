@@ -22,12 +22,12 @@ jobs:
         include:
           - app: web
             image_suffix: flurpilot-web
-            context: ./apps/web
-            dockerfile: ./apps/web/Dockerfile
+            context: .
+            dockerfile: apps/web/Dockerfile
           - app: worker
             image_suffix: flurpilot-worker
-            context: ./apps/worker
-            dockerfile: ./apps/worker/Dockerfile
+            context: .
+            dockerfile: apps/worker/Dockerfile
 
     steps:
       - name: Checkout repository
