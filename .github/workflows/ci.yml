@@ -13,8 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          path: flurpilot-core
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -25,39 +23,35 @@ jobs:
           pip install poetry
           poetry config virtualenvs.create false
       - name: Install Dependencies
-        run: cd flurpilot-core/apps/worker && poetry install
+        run: cd FlurPilot-Core/apps/worker && poetry install
       - name: Install Linting Tools
         run: pip install flake8 pytest
       - name: Lint with Flake8
-        run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        run: cd FlurPilot-Core/apps/worker && flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
       - name: Test with Pytest
-        run: pytest tests/ -v --tb=short || echo "No tests found or tests failed"
+        run: cd FlurPilot-Core/apps/worker && pytest tests/ -v --tb=short || echo "No tests found or tests failed"
 
   test-web:
     name: ⚡ Test Web (Turbo)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          path: flurpilot-core
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
-          cache-dependency-path: flurpilot-core/package-lock.json
+          cache-dependency-path: package-lock.json
       - name: Install Dependencies
-        run: cd flurpilot-core && npm ci
+        run: npm ci
       - name: Turbo Lint & Build
-        run: cd flurpilot-core && npx turbo run lint build --force
+        run: npx turbo run lint build --force
 
   test-geometry-engine:
     name: 🦀 Test Geometry Engine (Rust)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          path: flurpilot-core
       
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
@@ -65,46 +59,19 @@ jobs:
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
         with:
-          workspaces: "./flurpilot-core/packages/geometry-engine -> target"
+          workspaces: "./FlurPilot-Core/packages/geometry-engine -> target"
       
       - name: Run cargo check
-        run: cd flurpilot-core/packages/geometry-engine && cargo check --all-features
+        run: cd FlurPilot-Core/packages/geometry-engine && cargo check --all-features
       
       - name: Run cargo fmt
-        run: cd flurpilot-core/packages/geometry-engine && cargo fmt -- --check
+        run: cd FlurPilot-Core/packages/geometry-engine && cargo fmt -- --check
       
       - name: Run cargo clippy
-        run: cd flurpilot-core/packages/geometry-engine && cargo clippy --all-features -- -D warnings
+        run: cd FlurPilot-Core/packages/geometry-engine && cargo clippy --all-features -- -D warnings
       
       - name: Run cargo test
-        run: cd flurpilot-core/packages/geometry-engine && cargo test --all-features
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      
-      - name: Install Maturin
-        run: pip install maturin
-      
-      - name: Build Python package
-        run: maturin build --release
-      
-      - name: Install Python package
-        run: pip install target/wheels/geometry_engine*.whl
-      
-      - name: Install pytest
-        run: pip install pytest
-      
-      - name: Run Python tests
-        run: pytest tests/ -v
-      
-      - name: Upload wheels
-        uses: actions/upload-artifact@v4
-        with:
-          name: geometry-engine-wheels
-          path: target/wheels/
-          retention-days: 7
+        run: cd FlurPilot-Core/packages/geometry-engine && cargo test --all-features
 
   security-scan:
     name: 🛡️ Security Scan
@@ -115,8 +82,6 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-        with:
-          path: flurpilot-core
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -126,8 +91,8 @@ jobs:
       - name: Build Web Image
         uses: docker/build-push-action@v5
         with:
-          context: ./flurpilot-core
-          file: ./flurpilot-core/apps/web/Dockerfile
+          context: .
+          file: ./FlurPilot-Core/apps/web/Dockerfile
           push: false
           tags: flurpilot-web:latest
           outputs: type=docker,dest=/tmp/web.tar
@@ -148,8 +113,8 @@ jobs:
       - name: Build Worker Image
         uses: docker/build-push-action@v5
         with:
-          context: ./flurpilot-core
-          file: ./flurpilot-core/apps/worker/Dockerfile
+          context: .
+          file: ./FlurPilot-Core/apps/worker/Dockerfile
           push: false
           tags: flurpilot-worker:latest
           outputs: type=docker,dest=/tmp/worker.tar

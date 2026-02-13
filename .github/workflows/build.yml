@@ -22,18 +22,14 @@ jobs:
         include:
           - app: web
             image_suffix: flurpilot-web
-            context: ./flurpilot-core
-            dockerfile: ./flurpilot-core/apps/web/Dockerfile
+            dockerfile: ./FlurPilot-Core/apps/web/Dockerfile
           - app: worker
             image_suffix: flurpilot-worker
-            context: ./flurpilot-core
-            dockerfile: ./flurpilot-core/apps/worker/Dockerfile
+            dockerfile: ./FlurPilot-Core/apps/worker/Dockerfile
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          path: flurpilot-core
 
       - name: Log in to the Container registry
         uses: docker/login-action@v3
@@ -57,7 +53,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ${{ matrix.context }}
+          context: .
           file: ${{ matrix.dockerfile }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
