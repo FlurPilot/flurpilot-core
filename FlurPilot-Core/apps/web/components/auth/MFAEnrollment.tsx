@@ -6,7 +6,7 @@ import { Loader2, Fingerprint, ShieldCheck } from 'lucide-react';
 import { useAuth } from './AuthProvider';
 
 export default function MFAEnrollment() {
-    const { user } = useAuth();
+    const { } = useAuth();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
@@ -19,7 +19,7 @@ export default function MFAEnrollment() {
 
         try {
             // 1. Enroll Factor
-            const { data, error } = await supabase.auth.mfa.enroll({
+            const { error } = await supabase.auth.mfa.enroll({
                 factorType: 'totp', // TODO: Switch to 'webauthn' when available in client lib or configured
                 // Note: Supabase JS v2 supports TOTP. WebAuthn is newer. 
                 // For this MVP, we might fall back to TOTP if WebAuthn isn't fully ready in this SDK version

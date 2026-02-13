@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server'; // Assumes standardized server client creator
 import { z } from 'zod';
-import { cookies } from 'next/headers';
 
 // --- Configuration ---
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
@@ -11,8 +10,8 @@ const rateLimitMap = new Map<string, { count: number, resetTime: number }>();
 
 // Honeytoken Data (Fake Records)
 const HONEYTOKENS = [
-    { type: 'city', id: 'ht_muc_01', name: 'Bielefeld-Süd (Sperrgebiet)', state: 'FakeState' },
-    { type: 'parcel', id: 'ht_par_99', alkis_id: 'TEST-FLUR-9999', geom: null, properties: { usage: 'Top Secret' } }
+    { type: 'city' as const, id: 'ht_muc_01', name: 'Bielefeld-Süd (Sperrgebiet)', state: 'FakeState' },
+    { type: 'parcel' as const, id: 'ht_par_99', alkis_id: 'TEST-FLUR-9999', geom: null, properties: { usage: 'Top Secret' } }
 ];
 
 // Input Validation Schema
@@ -64,7 +63,6 @@ export async function GET(request: NextRequest) {
     }
 
     // 2. Authentication (Zero Trust)
-    const cookieStore = await cookies();
     const supabase = await createClient();
 
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -87,7 +85,7 @@ export async function GET(request: NextRequest) {
                 .single();
 
             return NextResponse.json(data || null);
-        } catch (e) {
+        } catch {
             return NextResponse.json({ error: 'Lookup failed' }, { status: 500 });
         }
     }

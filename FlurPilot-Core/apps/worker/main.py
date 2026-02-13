@@ -170,7 +170,7 @@ async def process_crawl_profile(profile):
                 # Upsert Evidence
                 try:
                     supabase.table("evidence_docs").upsert(doc, on_conflict="external_id").execute()
-                    logger.info(f"   > Indexed Evidence: {clean_title}")
+                    logger.info(f"   > Indexed Evidence: {title_result.sanitized_text[:50]}...")
                 except Exception as db_err:
                     logger.error(f"DB Error: {db_err}")
 

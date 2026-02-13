@@ -1,0 +1,7 @@
+.turbo/
+.venv/
+__pycache__/
+target/
+*.log
+.env
+node_modules

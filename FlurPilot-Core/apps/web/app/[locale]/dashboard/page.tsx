@@ -19,21 +19,22 @@ interface ParcelFeature {
 export default function DashboardPage() {
     const [selectedParcel, setSelectedParcel] = useState<ParcelFeature | null>(null);
 
-    const handleParcelSelect = (feature: ParcelFeature) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleParcelSelect = (feature: any) => {
         console.log("Parcel Selected:", feature);
-        setSelectedParcel(feature);
-    };
-
-    const handleFeedSelect = (feature: ParcelFeature) => {
-        console.log("Feed Selected:", feature);
-        setSelectedParcel(feature);
+        const parcelFeature: ParcelFeature = {
+            id: String(feature.properties?.id || feature.id || ''),
+            geometry: feature.geometry,
+            properties: feature.properties
+        };
+        setSelectedParcel(parcelFeature);
     };
 
     return (
         <div className="h-full w-full flex flex-col md:flex-row overflow-hidden">
             {/* LEFT PANEL: The Feed (Mobile: Bottom Sheet / Desktop: Left Sidebar) */}
             <div className="w-full h-[40%] md:w-[350px] md:h-full z-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] md:shadow-xl flex-shrink-0 relative order-2 md:order-1 border-t md:border-t-0 md:border-r border-slate-200">
-                <ParcelFeed onSelect={handleFeedSelect} />
+                <ParcelFeed onSelect={handleParcelSelect} />
 
                 {/* Mobile Overlay Toggle? (Later) */}
             </div>
@@ -49,7 +50,7 @@ export default function DashboardPage() {
 
                 <ParcelsMap
                     onParcelSelect={handleParcelSelect}
-                    focusedParcel={selectedParcel}
+                    focusedParcel={selectedParcel as unknown as { geometry: { type: string; coordinates: number[] } }}
                 />
 
                 <AnimatePresence>

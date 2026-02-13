@@ -1,5 +1,4 @@
-use geo::{Area, BooleanOps, MultiPolygon, Polygon};
-use geo_types::GeometryCollection;
+use geo::{Area, BooleanOps, MultiPolygon};
 #[cfg(feature = "python")]
 use pyo3::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -93,7 +92,7 @@ fn internal_calculate_virtual_parcel(request_json: &str) -> Result<String, Strin
 #[pyfunction]
 fn calculate_virtual_parcel(request_json: String) -> PyResult<String> {
     internal_calculate_virtual_parcel(&request_json)
-        .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e))
+        .map_err(PyErr::new::<pyo3::exceptions::PyValueError, _>)
 }
 
 #[cfg(feature = "python")]

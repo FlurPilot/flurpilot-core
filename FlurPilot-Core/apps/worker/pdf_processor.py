@@ -21,7 +21,7 @@ class PDFProcessor:
     """
     Handles secure PDF processing for the Hybrid Acquisition Engine.
     Integrates Privacy Pipeline (F-03) with Fail Closed design.
-    Supports text PDFs (pypdf) and scanned PDFs (pymupdf OCR fallback).
+    Supports text PDFs (pypdf) and scanned PDFs (pdf2image + pytesseract OCR fallback).
     """
 
     def __init__(self, fetcher=None):
@@ -38,15 +38,16 @@ class PDFProcessor:
         self._ocr_available: Optional[bool] = None
 
     def _check_ocr_available(self) -> bool:
-        """Check if pymupdf is installed for OCR fallback."""
+        """Check if OCR dependencies are installed for fallback."""
         if self._ocr_available is None:
             try:
-                import pymupdf
+                import pdf2image
+                import pytesseract
                 self._ocr_available = True
-                logger.info("OCR fallback available (pymupdf).")
+                logger.info("OCR fallback available (pdf2image + pytesseract).")
             except ImportError:
                 self._ocr_available = False
-                logger.warning("pymupdf not installed. OCR fallback disabled.")
+                logger.warning("OCR dependencies not installed. OCR fallback disabled.")
         return self._ocr_available
 
     async def process_url(self, url: str) -> Tuple[Optional[str], Optional[bytes], Optional[RedactionResult]]:
@@ -102,7 +103,7 @@ class PDFProcessor:
     def extract_text(self, file_bytes: bytes) -> str:
         """
         Extracts text from PDF bytes.
-        Uses pypdf first, falls back to pymupdf OCR for scanned documents.
+        Uses pypdf first, falls back to pdf2image + pytesseract OCR for scanned documents.
         """
         text = self._extract_text_pypdf(file_bytes)
 
@@ -144,23 +145,28 @@ class PDFProcessor:
             return ""
 
     def _extract_text_ocr(self, file_bytes: bytes) -> str:
-        """OCR fallback using pymupdf for scanned PDFs."""
+        """OCR fallback using pdf2image + pytesseract for scanned PDFs."""
         if not self._check_ocr_available():
             return ""
 
         try:
-            import pymupdf
+            from pdf2image import convert_from_bytes
+            import pytesseract
 
-            doc = pymupdf.open(stream=file_bytes, filetype="pdf")
+            # Convert PDF pages to images
+            images = convert_from_bytes(file_bytes, dpi=200)
             text_parts = []
 
-            for page in doc:
-                # Get text blocks (includes OCR if available)
-                text = page.get_text("text")
-                if text.strip():
-                    text_parts.append(text)
+            for i, image in enumerate(images):
+                try:
+                    # OCR each page
+                    text = pytesseract.image_to_string(image, lang='deu')
+                    if text and text.strip():
+                        text_parts.append(text)
+                        logger.debug(f"OCR extracted text from page {i+1}")
+                except Exception as page_e:
+                    logger.warning(f"OCR failed for page {i+1}: {page_e}")
 
-            doc.close()
             return "\n".join(text_parts).strip()
 
         except Exception as e:

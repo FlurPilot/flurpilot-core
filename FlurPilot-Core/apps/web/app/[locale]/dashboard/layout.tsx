@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Sidebar } from '@/components/dashboard/Sidebar';
 import { useTranslations } from 'next-intl';
-import { Menu, X, Bell } from 'lucide-react';
+import { Menu, Bell } from 'lucide-react';
 
 export default function DashboardLayout({
     children,

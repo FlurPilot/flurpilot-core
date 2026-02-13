@@ -141,21 +141,6 @@ class WFSClient:
         except Exception as e:
             logger.error(f"GML Parsing failed: {e}")
             return None
-        offset = 0.002
-        return {
-            "type": "Feature",
-            "properties": {"FLIK": "BY_REAL_FALLBACK_999"},
-            "geometry": {
-                "type": "Polygon",
-                "coordinates": [[
-                    [lon - offset, lat - offset],
-                    [lon + offset, lat - offset],
-                    [lon + offset, lat + offset],
-                    [lon - offset, lat + offset],
-                    [lon - offset, lat - offset]
-                ]]
-            }
-        }
 
     async def fetch_buildings(self, bbox: List[float]) -> List[Dict[str, Any]]:
         """

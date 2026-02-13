@@ -84,7 +84,9 @@ export default function ParcelsMap({ onParcelSelect, focusedParcel }: ParcelsMap
 
                 // Quick FlyTo if Point
                 if (geometry.type === 'Point') {
-                    [centerLng, centerLat] = geometry.coordinates;
+                    const coords = geometry.coordinates as number[];
+                    centerLng = coords[0];
+                    centerLat = coords[1];
                     mapRef.current.flyTo({ center: [centerLng, centerLat], zoom: 16 });
                 }
             } catch (e) {
@@ -164,7 +166,8 @@ export default function ParcelsMap({ onParcelSelect, focusedParcel }: ParcelsMap
         fetchVirtualParcels();
     }, []);
 
-    const onClick = (event: { features?: GeoJSONFeature[] }) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const onClick = (event: any) => {
         const feature = event.features?.[0];
         if (feature && onParcelSelect) {
             onParcelSelect(feature);
