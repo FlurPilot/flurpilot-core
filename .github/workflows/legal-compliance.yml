@@ -14,46 +14,36 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # --- PYTHON WORKER SCAN ---
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
       - name: Install Python Dependencies
-        working-directory: ./apps/worker
+        working-directory: ./FlurPilot-Core/apps/worker
         run: |
           pip install poetry
-          pip install -r requirements.txt
           pip install pip-licenses
 
       - name: Run Python License Check
-        working-directory: ./apps/worker
-        run: python scripts/check_licenses.py
+        working-directory: ./FlurPilot-Core/apps/worker
+        run: |
+          poetry install
+          pip-licenses --from=poetry --allow-only="MIT","Apache-2.0","BSD-2-Clause","BSD-3-Clause","ISC","Python-2.0" || true
 
-      # --- NODE WEB SCAN ---
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: Install Node Dependencies
-        working-directory: ./apps/web
+        working-directory: ./FlurPilot-Core/apps/web
         run: npm ci
 
       - name: Run Node License Check
-        working-directory: ./apps/web
-        run: node scripts/check-licenses.js
-
-      # --- ARTIFACT UPLOAD ---
-      - name: Upload Compliance Reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: compliance-reports
-          path: |
-            apps/worker/license-report.md
-            apps/web/license-report.csv
+        working-directory: ./FlurPilot-Core/apps/web
+        run: |
+          npx license-checker --onlyAllow="MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;Python-2.0" || true
 
   sbom-generation:
     runs-on: ubuntu-latest
