@@ -44,7 +44,7 @@ jobs:
         with:
           sparse-checkout: |
             FlurPilot-Core/apps/web
-            FlurPilot-Core/packages
+            FlurPilot-Core/packages/geometry-engine/pkg
             FlurPilot-Core/package.json
             FlurPilot-Core/package-lock.json
             FlurPilot-Core/turbo.json
@@ -57,11 +57,6 @@ jobs:
           cache-dependency-path: FlurPilot-Core/package-lock.json
       - name: Install Dependencies
         run: cd FlurPilot-Core && npm ci
-      - name: Build geometry-engine WASM
-        run: |
-          cd FlurPilot-Core/packages/geometry-engine
-          npm install
-          npm run build:wasm
       - name: Turbo Lint & Build
         run: cd FlurPilot-Core && npx turbo run lint build --force
 
