@@ -3,16 +3,19 @@ FROM node:20-bookworm-slim AS base
 # Install dependencies only when needed
 FROM base AS deps
 WORKDIR /app
-COPY package.json ./package.json
-COPY packages/geometry-engine/pkg/package.json ./packages/geometry-engine/pkg/package.json
-RUN npm install
+COPY apps/web/package.json ./apps/web/package.json
+COPY apps/web/package-lock.json* ./apps/web/
+COPY apps/web/lib/geometry-engine/package.json ./apps/web/lib/geometry-engine/package.json
+RUN cd apps/web && npm install
 
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-RUN npm run build
+COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
+COPY apps/web ./apps/web
+COPY package.json turbo.json ./
+COPY packages ./packages
+RUN cd apps/web && npm run build
 
 # Production image, copy all the files and run next
 # Security Hardening: Use Google Distroless (No Shell, No Package Manager)
