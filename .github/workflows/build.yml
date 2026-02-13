@@ -23,9 +23,11 @@ jobs:
           - app: web
             image_suffix: flurpilot-web
             dockerfile: ./FlurPilot-Core/apps/web/Dockerfile
+            context: ./FlurPilot-Core
           - app: worker
             image_suffix: flurpilot-worker
             dockerfile: ./FlurPilot-Core/apps/worker/Dockerfile
+            context: ./FlurPilot-Core
 
     steps:
       - name: Checkout repository
@@ -53,7 +55,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ${{ matrix.context }}
           file: ${{ matrix.dockerfile }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
