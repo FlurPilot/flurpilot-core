@@ -4,12 +4,12 @@ on:
   pull_request:
     branches: [ "main" ]
     paths:
-      - 'infrastructure/**'
+      - 'FlurPilot-Core/infrastructure/**'
       - '.github/workflows/infracost.yml'
   push:
     branches: [ "main" ]
     paths:
-      - 'infrastructure/**'
+      - 'FlurPilot-Core/infrastructure/**'
 
 jobs:
   infracost:
