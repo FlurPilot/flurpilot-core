@@ -11,15 +11,12 @@ RUN pip install poetry
 
 WORKDIR /app
 
-# Copy config from root context
-COPY pyproject.toml poetry.lock* ./apps/worker/
-
 # Copy poetry files to app dir
 COPY apps/worker/pyproject.toml apps/worker/poetry.lock* ./apps/worker/
 
 # Install dependencies
 RUN cd apps/worker && poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi || true
+    && poetry install --no-interaction --no-ansi
 
 # Create a non-root user
 RUN addgroup --system worker && adduser --system --group worker
