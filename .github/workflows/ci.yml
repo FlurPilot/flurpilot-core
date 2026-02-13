@@ -57,6 +57,10 @@ jobs:
           cache-dependency-path: FlurPilot-Core/package-lock.json
       - name: Install Dependencies
         run: cd FlurPilot-Core && npm install
+      - name: Setup Environment
+        run: |
+          echo "NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY= dummy-key-for-ci" >> $GITHUB_ENV
       - name: Turbo Lint & Build
         run: cd FlurPilot-Core && npx turbo run lint build --force
 
